@@ -4,9 +4,9 @@ import pytest
 from sqlalchemy import Table, MetaData, Column, String, func
 from geoalchemy2.types import Geometry
 from geoalchemy2.elements import (
-    WKTElement, WKBElement, RasterElement, CompositeElement
+    WKTElement, WKBElement, RasterElement, CompositeElement,
+    GeoJSONElement
 )
-from geoalchemy2.types import GeoJSONElement
 
 
 @pytest.fixture

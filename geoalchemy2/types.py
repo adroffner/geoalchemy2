@@ -7,6 +7,9 @@ Reference
 ---------
 """
 
+import json
+from sqlalchemy.sql import func
+
 from sqlalchemy.types import UserDefinedType, Integer
 from sqlalchemy.sql import func
 from sqlalchemy.dialects import postgresql
@@ -186,71 +189,9 @@ class Geography(_GISType):
         ``column_expression`` method. """
 
 
-# ==============================================================================
-# GeoJSON Columns and Elements for SQLAlchemy
-# ==============================================================================
-
-import json
-from geoalchemy2.elements import _SpatialElement
-from sqlalchemy.sql import functions
-from sqlalchemy.sql import func
-
-
-class GeoJSONElement(_SpatialElement, functions.Function):
-    """
-    Instances of this class wrap a GeoJSON value.
-
-    Usage examples::
-
-        geojson_element = GeoJSONElement('''{
-                "coordinates": [
-                    -73.974413,
-                    40.646598
-                ],
-                "type": "Point"
-            }''')
-
-        geojson_element_SRID_4326 = GeoJSONElement('''{
-                "coordinates": [
-                    -73.974413,
-                    40.646598
-                ],
-                "crs": {
-                    "properties": {
-                        "name": "EPSG:4326"
-                    },
-                    "type": "name"
-                },
-                "type": "Point"
-            }''')
-
-    """
-
-    def __init__(self, *args, **kwargs):
-        _SpatialElement.__init__(self, *args, **kwargs)
-        functions.Function.__init__(
-            self,
-            "ST_GeomFromGeoJSON",
-            self.data
-        )
-
-    @property
-    def desc(self):
-        """
-        This element's description string.
-        """
-        return self.data
-    
-    @property
-    def as_dict(self):
-        """
-        This element as a dict object.
-        """
-        return json.loads(self.data)
-
-
 class GeometryJSON(Geometry):
-    ''' Geometry JSON or GeoJSON Field
+    """
+    Geometry JSON or GeoJSON Field.
     
     This field returns a Geometry object in GeoJSON format.
 
@@ -261,7 +202,7 @@ class GeometryJSON(Geometry):
     See :class:`geoalchemy2.types._GISType` for the list of arguments that can
     be passed to the constructor.
 
-    '''
+    """
 
     from_text = 'ST_GeomFromGeoJSON'
     """ The ``FromText`` geometry constructor. Used by the parent class'
@@ -287,9 +228,6 @@ class GeometryJSON(Geometry):
             else:
                 return bindvalue
         return process
-
-
-# ==============================================================================
 
 
 class Raster(UserDefinedType):

@@ -1,4 +1,5 @@
 import binascii
+import json
 from geoalchemy2.compat import PY3
 
 try:
@@ -201,3 +202,56 @@ class CompositeElement(FunctionElement):
 @compiles(CompositeElement)
 def _compile_pgelem(expr, compiler, **kw):
     return '(%s).%s' % (compiler.process(expr.clauses, **kw), expr.name)
+
+
+class GeoJSONElement(_SpatialElement, functions.Function):
+    """
+    Instances of this class wrap a GeoJSON value.
+
+    Usage examples::
+
+        geojson_element = GeoJSONElement('''{
+                "coordinates": [
+                    -73.974413,
+                    40.646598
+                ],
+                "type": "Point"
+            }''')
+
+        geojson_element_SRID_4326 = GeoJSONElement('''{
+                "coordinates": [
+                    -73.974413,
+                    40.646598
+                ],
+                "crs": {
+                    "properties": {
+                        "name": "EPSG:4326"
+                    },
+                    "type": "name"
+                },
+                "type": "Point"
+            }''')
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        _SpatialElement.__init__(self, *args, **kwargs)
+        functions.Function.__init__(
+            self,
+            "ST_GeomFromGeoJSON",
+            self.data
+        )
+
+    @property
+    def desc(self):
+        """
+        This element's description string.
+        """
+        return self.data
+    
+    @property
+    def as_dict(self):
+        """
+        This element as a dict object.
+        """
+        return json.loads(self.data)
