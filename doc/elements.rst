@@ -16,3 +16,7 @@ Elements
 .. autoclass:: geoalchemy2.elements.RasterElement
    :members:
    :show-inheritance:
+
+.. autoclass:: geoalchemy2.elements.GeoJSONElement
+   :members:
+   :show-inheritance:
