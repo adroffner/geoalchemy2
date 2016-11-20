@@ -171,9 +171,10 @@ class TestGeoJSONElement():
     def test_function_call(self):
         e = GeoJSONElement(self.point_str)
         f = e.ST_Buffer(2)
-        eq_sql(f, 'ST_Buffer(ST_GeomFromGeoJSON(:ST_GeomFromGeoJSON_1), :param_1)')
+        eq_sql(f, 'ST_Buffer(ST_GeomFromGeoJSON(:ST_GeomFromGeoJSON_1), :ST_Buffer_1)')
         assert f.compile().params == {
-            u'param_1': 2, u'ST_GeomFromGeoJSON_1': self.point_str
+            u'ST_GeomFromGeoJSON_1': self.point_str,
+            u'ST_Buffer_1': 2,
         }
 
     def test_function_str(self):

@@ -220,7 +220,7 @@ class TestGeographyJSON():
 
     def test_column_expression(self, geometryjson_table):
         s = select([geometryjson_table.c.geom])
-        eq_sql(s, 'SELECT ST_AsGeoJSON("table".geom, :param_1, :param_2) AS geom FROM "table"')
+        eq_sql(s, 'SELECT ST_AsGeoJSON("table".geom, :ST_AsGeoJSON_1, :ST_AsGeoJSON_2) AS geom FROM "table"')
 
     def test_select_bind_expression(self, geometryjson_table):
         s = select(['foo']).where(
@@ -237,7 +237,7 @@ class TestGeographyJSON():
     def test_function_call(self, geometryjson_table):
         s = select([geometryjson_table.c.geom.ST_Buffer(2)])
         eq_sql(s,
-               'SELECT ST_AsEWKB(ST_Buffer("table".geom, :param_1)) '
+               'SELECT ST_AsEWKB(ST_Buffer("table".geom, :ST_Buffer_2)) '
                'AS "ST_Buffer_1" FROM "table"')
 
     def test_non_ST_function_call(self, geometryjson_table):
@@ -249,6 +249,6 @@ class TestGeographyJSON():
         # http://hg.sqlalchemy.org/sqlalchemy/rev/f1efb20c6d61
         s = select([geometryjson_table]).alias('name').select()
         eq_sql(s,
-               'SELECT ST_AsGeoJSON(name.geom, :param_1, :param_2) AS geom '
+               'SELECT ST_AsGeoJSON(name.geom, :ST_AsGeoJSON_1, :ST_AsGeoJSON_2) AS geom '
                'FROM (SELECT "table".geom AS geom FROM "table") AS name')
 
